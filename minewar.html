@@ -45,21 +45,30 @@ background-color:white;
 </head>
 <h1> MINE WAR!</h1>
 
-<div style="float:left">
-<canvas id="minewar-canvas" width="450" height="280" style="border:1px solid black">
+<div>
+	<div style="float:left">
+	<canvas id="minewar-canvas" width="450" height="280" style="border:1px solid black">
 
-</canvas>
+	</canvas>
+	</div>
+
+	<div>You are at Hex: <span id="mouse-over-hex-label" style="margin:5px;">0,0</span> </div>
+
+	<div>You are at Mouse-X: <span id="mouse-x-label" style="margin:5px;"></span> </div>
+	<div>You are at Mouse-Y: <span id="mouse-y-label" style="margin:5px;"></span> </div>
+
+	<div>Center-X <span id="center-x-coord-label" style="margin:5px;"></span> </div>
+	<div>Center-Y <span id="center-y-coord-label" style="margin:5px;"></span> </div>
+
+	<div style="clear:both"> 
 </div>
 
-<div>You are at Hex: <span id="mouse-over-hex-label" style="margin:5px;">0,0</span> </div>
-
-<div>You are at Mouse-X: <span id="mouse-x-label" style="margin:5px;"></span> </div>
-<div>You are at Mouse-Y: <span id="mouse-y-label" style="margin:5px;"></span> </div>
-
-<div>Center-X <span id="center-x-coord-label" style="margin:5px;"></span> </div>
-<div>Center-Y <span id="center-y-coord-label" style="margin:5px;"></span> </div>
-
-<div style="clear:both"> 
+<div style="margin-top:40px;">
+<input id="btn-place-mine" type="button" value="Place Mine" style="margin:5px;" />
+<input id="btn-place-flag" type="button" value="Place Flag" style="margin:5px;" />
+<input id="btn-place-robot" type="button" value="Place Robot" style="margin:5px;" />
+<input id="btn-place-soldier" type="button" value="Place Soldier" style="margin:5px;" />
+</div>
 
 <table id="game-board" style="display:none;">
 <tr id="row1">

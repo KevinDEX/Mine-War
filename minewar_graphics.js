@@ -16,6 +16,16 @@ var vert_space = hex_height * 3/4;
 var bomb_icon = new Image();
 bomb_icon.src = "img/bomb.png";
 
+var flag_icon = new Image();
+flag_icon.src = "img/flag.png";
+
+var robot_icon = new Image();
+robot_icon.src = "img/robot.png";
+
+var soldier_icon = new Image();
+soldier_icon.src = "img/soldier.png";
+
+
 function mwg_drawHex(center,size, gameboardHex){
 
 var points = new Array(
@@ -49,7 +59,24 @@ var points = new Array(
 	drawingContext.stroke();
 
 	gameboardHex.Hex = new Hex(center.x,center.y,center);
-	//drawingContext.drawImage(bomb_icon,center.x-(hex_size/2),center.y-(hex_size/2),hex_size,hex_size);
+	
+	for(var unit in gameboardHex.Occupants){
+		switch(gameboardHex.Occupants[unit].constructor.name) {
+			case 'Soldier':
+				drawingContext.drawImage(soldier_icon,center.x-(hex_size/2),center.y-(hex_size/2),hex_size,hex_size);
+				break;
+			case 'Mine':
+				drawingContext.drawImage(bomb_icon,center.x-(hex_size/2),center.y-(hex_size/2),hex_size,hex_size);
+				break;
+			case 'Flag':
+				drawingContext.drawImage(flag_icon,center.x-(hex_size/2),center.y-(hex_size/2),hex_size,hex_size);
+				break;
+			case 'Robot':
+				drawingContext.drawImage(robot_icon,center.x-(hex_size/2),center.y-(hex_size/2),hex_size,hex_size);
+				break;
+		}
+
+	}
 
 }
 

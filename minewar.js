@@ -7,6 +7,7 @@ $( document ).ready(function() {
 	
 		$(bomb_icon).on('load',function(){
 			initGameboard();
+			initPlacementButtons();
 		});
 
 	
@@ -26,15 +27,29 @@ $( document ).ready(function() {
 	
 	$(minewar_canvas).on('click',function(event){
 	
-		if(state == 'PLACE_BOMB_1'){
-			var clickLoc = getMousePos(minewar_canvas,event);
+		var clickLoc = getMousePos(minewar_canvas,event);
 			var hexClicked = pixel_to_hex(clickLoc.x, clickLoc.y, hex_size);
 			
 			var hexCenterX = gameboard[hexClicked.q][hexClicked.r].Hex.center.x;
 			var hexCenterY = gameboard[hexClicked.q][hexClicked.r].Hex.center.y;
-			
-			drawingContext.drawImage(bomb_icon,hexCenterX-(hex_size/2),hexCenterY-(hex_size/2),hex_size,hex_size);
+	
+	
+		switch(state) {
+			case 'PLACE_MINE':
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Mine(hexClicked.q,hexClicked.r));
+				break;
+			case 'PLACE_FLAG':
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Flag(hexClicked.q,hexClicked.r));
+				break;
+			case 'PLACE_ROBOT':
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Robot(hexClicked.q,hexClicked.r));
+				break;
+			case 'PLACE_SOLDIER':
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Soldier(hexClicked.q,hexClicked.r));
+				break;
 		}
+		
+		initGameboard();
 	});
 	
 });
@@ -44,13 +59,13 @@ function unit(player,x,y,order){
 }
 
 function Soldier(x,y){
-	moveTo(x,y);
-	fireAt(x,y);
-	excavate();
+	//moveTo(x,y);
+	//fireAt(x,y);
+	//excavate();
 }
 
 function Robot(x,y){
-	moveTo(x,y);
+	//moveTo(x,y);
 }
 
 function Flag(x,y){
@@ -120,19 +135,23 @@ this.drawHex = mwg_drawHex;
 
 var gameboard = 
 	{ 
-		'-4': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'-3': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'-2': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'-1': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'0': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'1': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'2': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'3': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, },
-		'4': { '-4': {}, '-3': {}, '-2': {}, '-1': {}, '0': {}, '1': {}, '2': {}, '3': {}, '4': {}, }
+		'-4': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'-3': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'-2': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'-1': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'0': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'1': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'2': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'3': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'4': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, }
 	};
 
 
 function initGameboard(){
+
+	drawingContext.clearRect ( 0 , 0 , minewar_canvas.width, minewar_canvas.height );
+
+	center_x = (hex_width * 9)/2;
 
 	var offset_index = 0;
 	var offset;
@@ -145,7 +164,9 @@ function initGameboard(){
 			if(y<0){ playerNum = 1;}
 			if(y>0){ playerNum = 2;}
 			
-			gameboard[x][y] = new GameboardHex(x,y,playerNum,null);
+			if(gameboard[x][y] == null){
+				gameboard[x][y] = new GameboardHex(x,y,playerNum,null);
+			}
 			var p = new Point(center_x - (-x * horiz_space),(y * vert_space * -1 ) + center_y);
 			gameboard[x][y].drawHex(p,hex_size,gameboard[x][y]);
 
@@ -154,10 +175,26 @@ function initGameboard(){
 		}
 	
 	
-	state = 'PLACE_BOMB_1';
+	//state = 'PLACE_BOMB';
 }
 
 var state;
+
+function initPlacementButtons(){
+	
+	$('#btn-place-mine').on('click',function(event)
+		{ state = 'PLACE_MINE'});
+		
+	$('#btn-place-flag').on('click',function(event)
+		{ state = 'PLACE_FLAG'});
+		
+	$('#btn-place-soldier').on('click',function(event)
+		{ state = 'PLACE_SOLDIER'});
+		
+	$('#btn-place-robot').on('click',function(event)
+		{ state = 'PLACE_ROBOT'});
+}
+
 /*
 
 player1 - place flag;
