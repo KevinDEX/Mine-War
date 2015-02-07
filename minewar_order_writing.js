@@ -20,8 +20,8 @@ var ORDER_WRITING_PHASE = {
 
 function initOrdersEngineButtons(){
 
-$('#btn-select-player1').click(function() { STATE_ORDERS_ACTIVE_PLAYER = "PLAYER1";  $('#btn-select-player1').css('background-color','yellow'); $('#btn-select-player2').css('background-color','lightgray');});
-$('#btn-select-player2').click(function() { STATE_ORDERS_ACTIVE_PLAYER = "PLAYER2";  $('#btn-select-player2').css('background-color','yellow');$('#btn-select-player1').css('background-color','lightgray');});
+$('#btn-select-player1').click(function() { STATE_ORDERS_ACTIVE_PLAYER = player1;  $('#btn-select-player1').css('background-color','yellow'); $('#btn-select-player2').css('background-color','lightgray');});
+$('#btn-select-player2').click(function() { STATE_ORDERS_ACTIVE_PLAYER = player2;  $('#btn-select-player2').css('background-color','yellow');$('#btn-select-player1').css('background-color','lightgray');});
 
 $('#btn-order-select-unit').click(function() { 
 	ACTIVE_ORDER = new Order(); 
@@ -49,12 +49,14 @@ $('#btn-order-retreat').click(function() { ACTIVE_ORDER.orderType = OrderType.RE
 
 function displayActiveOrder(){
 
-	$('#lbl-active-order-player').text(ACTIVE_ORDER.unit.player);
-	if(ACTIVE_ORDER){
-		if(ACTIVE_ORDER.unit) {$('#lbl-active-order-unit').text(ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y);}
-		if(ACTIVE_ORDER.orderType) {$('#lbl-active-order-type').text(ACTIVE_ORDER.orderType);}
-		if(ACTIVE_ORDER.orderX != undefined && ACTIVE_ORDER.orderY != undefined) {$('#lbl-active-order-loc').text(ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY);}
-	}
+	try{
+		$('#lbl-active-order-player').text(ACTIVE_ORDER.unit.player);
+		if(ACTIVE_ORDER){
+			if(ACTIVE_ORDER.unit) {$('#lbl-active-order-unit').text(ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y);}
+			if(ACTIVE_ORDER.orderType) {$('#lbl-active-order-type').text(ACTIVE_ORDER.orderType);}
+			if(ACTIVE_ORDER.orderX != undefined && ACTIVE_ORDER.orderY != undefined) {$('#lbl-active-order-loc').text(ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY);}
+		}
+	}catch(ex){}
 }
 
 function displaySavedOrders(){
@@ -66,22 +68,47 @@ function displaySavedOrders(){
 
 function saveOrder(){
 
-	if(ACTIVE_ORDER.player = 'PLAYER1'){
-		PLAYER_1_CURRENT_ORDERS.push(ACTIVE_ORDER);
-		$('#saved_orders').append('<tr id=p1order'+(PLAYER_1_CURRENT_ORDERS.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
-			+'<td>'+ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y+'</td>'
-			+'<td>'+ACTIVE_ORDER.orderType+'</td>'
-			+'<td>'+ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY+'</td>'
-			+'<td><input type="button" value="Delete" onclick="PLAYER_1_CURRENT_ORDERS.pop('+(PLAYER_1_CURRENT_ORDERS.length-1)+');$(\'#p1order'+(PLAYER_1_CURRENT_ORDERS.length-1)+'\').remove();" /></tr>');
+	if(ACTIVE_ORDER.orderType == OrderType.HOLD){
+		ACTIVE_ORDER.orderX = ACTIVE_ORDER.unit.X;
+		ACTIVE_ORDER.orderY = ACTIVE_ORDER.unit.Y;
+	}
+
+	var orderDistance = hex_distance(gameboard[ACTIVE_ORDER.orderX][ACTIVE_ORDER.orderY],
+			gameboard[ACTIVE_ORDER.unit.X][ACTIVE_ORDER.unit.Y]) ;
+
+	if(ACTIVE_ORDER.orderType == OrderType.MOVE){
+		if(orderDistance != 1)
+		{
+			alert('invalid move');
+			return;
+		}
 	}
 	
-	else if(ACTIVE_ORDER.player = 'PLAYER2'){
-		PLAYER_2_CURRENT_ORDERS.push(ACTIVE_ORDER);
-		$('#saved_orders').append('<tr id=p2order'+(PLAYER_2_CURRENT_ORDERS.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
+	if(ACTIVE_ORDER.orderType == OrderType.FIRE){
+		if((orderDistance < 1 || orderDistance > 2) || ACTIVE_ORDER.unit.constructor.name != 'Soldier')
+		{
+			alert('invalid fire order');
+			return;
+		}
+	}
+
+	if(ACTIVE_ORDER.player = player1.playerId){
+	
+		player1.orders.push(ACTIVE_ORDER);
+		$('#saved_orders').append('<tr id=p1order'+(player1.orders.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
 			+'<td>'+ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y+'</td>'
 			+'<td>'+ACTIVE_ORDER.orderType+'</td>'
 			+'<td>'+ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY+'</td>'
-			+'<td><input type="button" value="Delete" onclick="PLAYER_2_CURRENT_ORDERS.pop('+(PLAYER_2_CURRENT_ORDERS.length-1)+');$(\'#p2order'+(PLAYER_2_CURRENT_ORDERS.length-1)+'\').remove();" /></tr>');
+			+'<td><input type="button" value="Delete" onclick="player1.orders.pop('+(player1.orders.length-1)+');$(\'#p1order'+(player1.orders.length-1)+'\').remove();" /></tr>');
+	}
+	
+	else if(ACTIVE_ORDER.player = player2.playerId){
+		player2.orders.push(ACTIVE_ORDER);
+		$('#saved_orders').append('<tr id=p2order'+(player2.orders.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
+			+'<td>'+ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y+'</td>'
+			+'<td>'+ACTIVE_ORDER.orderType+'</td>'
+			+'<td>'+ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY+'</td>'
+			+'<td><input type="button" value="Delete" onclick="player1.orders.pop('+(player2.orders.length-1)+');$(\'#p2order'+(player2.orders.length-1)+'\').remove();" /></tr>');
 	}
 	
 	

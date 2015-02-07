@@ -119,6 +119,9 @@ function Hex(q,r,center){
    this.center = center;
    this.q = q;
    this.r = r
+   
+   this.boardX;
+   this.boardY;
 }
 
 function cube_round(h){
@@ -158,6 +161,13 @@ function hex_to_cube(h){
 
 function hex_round(h){
     return cube_to_hex(cube_round(hex_to_cube(h)))
+}
+
+//pass in GameboardHex
+function hex_distance(a, b) {
+    return (Math.abs(a.X - b.X) 
+          + Math.abs(a.X + a.Y - b.X - b.Y)
+          + Math.abs(a.Y - b.Y)) / 2;
 }
 
 

@@ -34,22 +34,31 @@ $( document ).ready(function() {
 			var hexCenterX = gameboard[hexClicked.q][hexClicked.r].Hex.center.x;
 			var hexCenterY = gameboard[hexClicked.q][hexClicked.r].Hex.center.y;
 	
-	
+		var newUnitRef = null;
 		switch(state) {
+					
 			case 'PLACE_MINE':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Mine(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				newUnitRef = new Mine(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER);
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(newUnitRef);
+				STATE_ORDERS_ACTIVE_PLAYER.units.push(newUnitRef)
 				state="";
 				break;
 			case 'PLACE_FLAG':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Flag(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				newUnitRef = new Flag(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER);
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(newUnitRef);
+				STATE_ORDERS_ACTIVE_PLAYER.units.push(newUnitRef)
 				state="";
 				break;
 			case 'PLACE_ROBOT':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Robot(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				newUnitRef = new Robot(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER);
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(newUnitRef);
+				STATE_ORDERS_ACTIVE_PLAYER.units.push(newUnitRef)
 				state="";
 				break;
 			case 'PLACE_SOLDIER':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Soldier(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				newUnitRef = new Soldier(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER);
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(newUnitRef);
+				STATE_ORDERS_ACTIVE_PLAYER.units.push(newUnitRef)
 				state="";
 				break;
 		}
@@ -83,6 +92,8 @@ $( document ).ready(function() {
 	
 	$('#btn_save_order').click(function(){saveOrder();});
 	
+	$('#btn_execute_orders').click(function(){executeTurn();});
+	
 });
 
 function unit(player,x,y,order){
@@ -91,7 +102,7 @@ function unit(player,x,y,order){
 
 function Soldier(x,y,player){
 
-	this.player = player;;
+	this.player = player.playerId;;
 	this.X = x;
 	this.Y = y;
 	//moveTo(x,y);
@@ -101,7 +112,7 @@ function Soldier(x,y,player){
 
 function Robot(x,y,player){
 
-	this.player = player;
+	this.player = player.playerId;
 	this.X = x;
 	this.Y = y;
 	//moveTo(x,y);
@@ -109,13 +120,13 @@ function Robot(x,y,player){
 
 function Flag(x,y,player){
 
-	this.player = player;;
+	this.player = player.playerId;;
 	this.X = x;
 	this.Y = y;
 }
 
 function Mine(x,y,player){
-   	this.player = player;
+   	this.player = player.playerId;;
 	this.X = x;
 	this.Y = y;
 }
@@ -166,40 +177,6 @@ function Order(){
 }
 
 
-function executeTurn(){
-	moveUnits();
-	resolveCollisions();
-	handleShots();
-	explodeMines();
-	disableMines();
-	victoryCheck();
-}
-
-function moveUnits(){
-
-}
-
-function resolveCollisions(){
-
-}
-
-function handleShots(){
-
-}
-
-function explodeMines(){
-
-}
-
-function disableMines(){
-
-}
-
-function victoryCheck(){
-
-}
-
-
 function GameboardHex(x,y,visible,occupant){
 
 this.X = x;
@@ -208,7 +185,9 @@ this.Visibility =  visible;
 this.Occupants = [];
 this.Hex;
 
-this.drawHex = mwg_drawHex;
+return {X:this.X, Y:this.Y,Visibility:this.Visibility,Occupants:this.Occupants,Hex:this.Hex};
+
+//this.drawHex = mwg_drawHex;
 
 }
 
@@ -228,6 +207,23 @@ var gameboard =
 	};
 
 
+function ProtoGameboard(){
+	
+	return { 
+		'-4': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'-3': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'-2': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'-1': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'0': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'1': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'2': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'3': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, },
+		'4': { '-4': null, '-3': null, '-2': null, '-1': null, '0': null, '1': null, '2': null, '3': null, '4': null, }
+	};
+}
+	
+	
+	
 function initGameboard(){
 
 	drawingContext.clearRect ( 0 , 0 , minewar_canvas.width, minewar_canvas.height );
@@ -249,7 +245,7 @@ function initGameboard(){
 				gameboard[x][y] = new GameboardHex(x,y,playerNum,null);
 			}
 			var p = new Point(center_x - (-x * horiz_space),(y * vert_space * -1 ) + center_y);
-			gameboard[x][y].drawHex(p,hex_size,gameboard[x][y]);
+			mwg_drawHex(p,hex_size,gameboard[x][y]);
 
 		}
 		center_x = center_x + (horiz_space / 2);
@@ -276,43 +272,25 @@ function initPlacementButtons(){
 		{ state = 'PLACE_ROBOT'});
 }
 
-/*
 
-player1 - place flag;
-player2 - place flag;
+function Player(player){
 
-player1 - place 1st mine;
-player1 - place 2nd mine;
-player1 - place 3rd mine;
-
-player2 - place 1st mine;
-player2 - place 2nd mine;
-player2 - place 3rd mine;
-
-player1 - place soldier;
-player2 - place soldier;
-
-player1 - define moves;
-player2 - define moves;
-
-*/
-
-
-function player(){
-
-  var playerNum;
-  var units = [];
-  
+  this.playerId = player;
+  this.units = [];
+  this.orders = [];
 }
 
 function findPlayerUnitInHex(hex,player,UnitType){
 
 	for(var curUnit in hex.Occupants){
-		if(hex.Occupants[curUnit].constructor.name == UnitType && hex.Occupants[curUnit].player == player){
+		if(hex.Occupants[curUnit].constructor.name == UnitType && hex.Occupants[curUnit].playerId == player.Id){
 			return hex.Occupants[curUnit];
 		}
 	}
 	
 	return null;
 }
+
+var player1 = new Player('PLAYER1');
+var player2 = new Player('PLAYER2');
 
