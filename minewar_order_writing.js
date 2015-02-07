@@ -20,8 +20,8 @@ var ORDER_WRITING_PHASE = {
 
 function initOrdersEngineButtons(){
 
-$('#btn-select-player1').click(function() { STATE_ORDERS_ACTIVE_PLAYER = "PLAYER1"; displayActiveOrder(); });
-$('#btn-select-player2').click(function() { STATE_ORDERS_ACTIVE_PLAYER = "PLAYER2"; displayActiveOrder(); });
+$('#btn-select-player1').click(function() { STATE_ORDERS_ACTIVE_PLAYER = "PLAYER1";  $('#btn-select-player1').css('background-color','yellow'); $('#btn-select-player2').css('background-color','lightgray');});
+$('#btn-select-player2').click(function() { STATE_ORDERS_ACTIVE_PLAYER = "PLAYER2";  $('#btn-select-player2').css('background-color','yellow');$('#btn-select-player1').css('background-color','lightgray');});
 
 $('#btn-order-select-unit').click(function() { 
 	ACTIVE_ORDER = new Order(); 
@@ -49,7 +49,7 @@ $('#btn-order-retreat').click(function() { ACTIVE_ORDER.orderType = OrderType.RE
 
 function displayActiveOrder(){
 
-	$('#lbl-active-order-player').text(STATE_ORDERS_ACTIVE_PLAYER);
+	$('#lbl-active-order-player').text(ACTIVE_ORDER.unit.player);
 	if(ACTIVE_ORDER){
 		if(ACTIVE_ORDER.unit) {$('#lbl-active-order-unit').text(ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y);}
 		if(ACTIVE_ORDER.orderType) {$('#lbl-active-order-type').text(ACTIVE_ORDER.orderType);}
@@ -59,12 +59,8 @@ function displayActiveOrder(){
 
 function displaySavedOrders(){
 
-	$('#lbl-active-order-player').text(STATE_ORDERS_ACTIVE_PLAYER);
-	if(ACTIVE_ORDER){
-		if(ACTIVE_ORDER.unit) {$('#lbl-active-order-unit').text(ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y);}
-		if(ACTIVE_ORDER.orderType) {$('#lbl-active-order-type').text(ACTIVE_ORDER.orderType);}
-		if(ACTIVE_ORDER.orderX != undefined && ACTIVE_ORDER.orderY != undefined) {$('#lbl-active-order-loc').text(ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY);}
-	}
+	
+
 }
 
 
@@ -72,18 +68,28 @@ function saveOrder(){
 
 	if(ACTIVE_ORDER.player = 'PLAYER1'){
 		PLAYER_1_CURRENT_ORDERS.push(ACTIVE_ORDER);
+		$('#saved_orders').append('<tr id=p1order'+(PLAYER_1_CURRENT_ORDERS.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
+			+'<td>'+ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y+'</td>'
+			+'<td>'+ACTIVE_ORDER.orderType+'</td>'
+			+'<td>'+ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY+'</td>'
+			+'<td><input type="button" value="Delete" onclick="PLAYER_1_CURRENT_ORDERS.pop('+(PLAYER_1_CURRENT_ORDERS.length-1)+');$(\'#p1order'+(PLAYER_1_CURRENT_ORDERS.length-1)+'\').remove();" /></tr>');
 	}
 	
 	else if(ACTIVE_ORDER.player = 'PLAYER2'){
 		PLAYER_2_CURRENT_ORDERS.push(ACTIVE_ORDER);
-	}
-	
-	$('#saved_orders').append('<tr><td>'+ACTIVE_ORDER.player+'</td>'
+		$('#saved_orders').append('<tr id=p2order'+(PLAYER_2_CURRENT_ORDERS.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
 			+'<td>'+ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y+'</td>'
 			+'<td>'+ACTIVE_ORDER.orderType+'</td>'
-			+'<td>'+ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY+'</td></tr>');
+			+'<td>'+ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY+'</td>'
+			+'<td><input type="button" value="Delete" onclick="PLAYER_2_CURRENT_ORDERS.pop('+(PLAYER_2_CURRENT_ORDERS.length-1)+');$(\'#p2order'+(PLAYER_2_CURRENT_ORDERS.length-1)+'\').remove();" /></tr>');
+	}
+	
 	
 	ACTIVE_ORDER = null;
+	$('#lbl-active-order-unit').text("");
+	$('#lbl-active-order-type').text("");
+	$('#lbl-active-order-loc').text("");
+	$('#lbl-active-order-player').text("");
 	displayActiveOrder();
 }
 

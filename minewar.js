@@ -91,7 +91,7 @@ function unit(player,x,y,order){
 
 function Soldier(x,y,player){
 
-	this.player;
+	this.player = player;;
 	this.X = x;
 	this.Y = y;
 	//moveTo(x,y);
@@ -101,7 +101,7 @@ function Soldier(x,y,player){
 
 function Robot(x,y,player){
 
-	this.player;
+	this.player = player;
 	this.X = x;
 	this.Y = y;
 	//moveTo(x,y);
@@ -109,13 +109,13 @@ function Robot(x,y,player){
 
 function Flag(x,y,player){
 
-	this.player;
+	this.player = player;;
 	this.X = x;
 	this.Y = y;
 }
 
 function Mine(x,y,player){
-   	this.player;
+   	this.player = player;
 	this.X = x;
 	this.Y = y;
 }
@@ -308,7 +308,7 @@ function player(){
 function findPlayerUnitInHex(hex,player,UnitType){
 
 	for(var curUnit in hex.Occupants){
-		if(hex.Occupants[curUnit].constructor.name == UnitType){
+		if(hex.Occupants[curUnit].constructor.name == UnitType && hex.Occupants[curUnit].player == player){
 			return hex.Occupants[curUnit];
 		}
 	}
