@@ -15,6 +15,8 @@ height:20px;
 width:20px;
 border:2px solid black;
 background-color:lightgrey;
+padding-left:50px;
+padding-right:50px;
 }
 
 #row4 td{
@@ -40,6 +42,8 @@ background-color:white;
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="minewar.js"></script>
 <script src="minewar_graphics.js"></script>
+<script src="minewar_order_writing.js"></script>
+<script src="minewar_order_execution.js"></script>
 
 
 </head>
@@ -63,12 +67,69 @@ background-color:white;
 	<div style="clear:both"> 
 </div>
 
-<div style="margin-top:40px;">
-<input id="btn-place-mine" type="button" value="Place Mine" style="margin:5px;" />
-<input id="btn-place-flag" type="button" value="Place Flag" style="margin:5px;" />
-<input id="btn-place-robot" type="button" value="Place Robot" style="margin:5px;" />
-<input id="btn-place-soldier" type="button" value="Place Soldier" style="margin:5px;" />
+
+<div style="margin-top:40px;border:1px black solid">
+	Select Player:<br/>
+	<input id="btn-select-player1" type="button" value="Player 1" style="margin:5px;" />
+	<input id="btn-select-player2" type="button" value="Player 2" style="margin:5px;" />
+	<br/><br/>
+	Unit Placement<br/>
+	<input id="btn-place-mine" type="button" value="Place Mine" style="margin:5px;" />
+	<input id="btn-place-flag" type="button" value="Place Flag" style="margin:5px;" />
+	<input id="btn-place-robot" type="button" value="Place Robot" style="margin:5px;" />
+	<input id="btn-place-soldier" type="button" value="Place Soldier" style="margin:5px;" />
 </div>
+
+
+<div style="margin-top:40px;">
+	<div id="order_actions" style="float:left;margin:20px;border:1px black solid;">
+		Unit Orders<br/>
+		<input id="btn-order-select-unit" type="button" value="Select Unit" style="margin:5px;" /> 
+		<input id="btn-order-select-location" type="button" value="Select order location" style="margin:5px;" /> 
+		<br/>
+		<br/>
+		Write Primary Orders<br/>
+		<input id="btn-order-move" type="button" value="Move" style="margin:5px;" />
+		<input id="btn-order-support" type="button" value="Support" style="margin:5px;" />
+		<input id="btn-order-hold" type="button" value="Hold" style="margin:5px;" />
+		<input id="btn-order-fire" type="button" value="Fire" style="margin:5px;" />
+		<br/>
+		<br/>
+
+		Write Secondary / Retreat Orders<br/>
+		<input id="btn-order-pickupmine" type="button" value="Pickup Mine" style="margin:5px;" />
+		<input id="btn-order-placemine" type="button" value="Place Mine" style="margin:5px;" />
+		<input id="btn-order-retreat" type="button" value="Retreat Move" style="margin:5px;" />
+		<br/><br/>
+	</div>
+	
+
+<div style="float:left;">
+
+	<div style="margin:20px;border:1px black solid;">
+		<div style="float:left">Active Order:</div><div style="float:right"><input id="btn_save_order" type="button" value="Save Order" /></div> 
+		<div style="clear:both">
+			<table>
+			<tr><th>Player</th><th>Unit</th><th>Order Type</th><th>Location</th></tr>
+			<tr><td id="lbl-active-order-player"></td><td id="lbl-active-order-unit"></td><td id="lbl-active-order-type"></td><td id="lbl-active-order-loc"></td></tr>
+			</table>
+		</div>
+	</div>
+	
+	
+	<div style="margin:20px;border:1px black solid;">
+			<div style="float:left">Current Orders:</div>
+			<div style="clear:both">
+				<table id="saved_orders">
+				<tr><th>Player</th><th>Unit</th><th>Order Type</th><th>Location</th></tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
 
 <table id="game-board" style="display:none;">
 <tr id="row1">

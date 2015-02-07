@@ -8,6 +8,7 @@ $( document ).ready(function() {
 		$(bomb_icon).on('load',function(){
 			initGameboard();
 			initPlacementButtons();
+			initOrdersEngineButtons();
 		});
 
 	
@@ -36,21 +37,51 @@ $( document ).ready(function() {
 	
 		switch(state) {
 			case 'PLACE_MINE':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Mine(hexClicked.q,hexClicked.r));
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Mine(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				state="";
 				break;
 			case 'PLACE_FLAG':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Flag(hexClicked.q,hexClicked.r));
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Flag(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				state="";
 				break;
 			case 'PLACE_ROBOT':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Robot(hexClicked.q,hexClicked.r));
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Robot(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				state="";
 				break;
 			case 'PLACE_SOLDIER':
-				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Soldier(hexClicked.q,hexClicked.r));
+				gameboard[hexClicked.q][hexClicked.r].Occupants.push(new Soldier(hexClicked.q,hexClicked.r,STATE_ORDERS_ACTIVE_PLAYER));
+				state="";
 				break;
 		}
 		
+		switch(STATE_ORDER_WRITING_PHASE) {
+			case ORDER_WRITING_PHASE.UNIT_SELECT:
+				var robot;
+				var soldier;
+				robot = findPlayerUnitInHex(gameboard[hexClicked.q][hexClicked.r],STATE_ORDERS_ACTIVE_PLAYER,"Robot");
+				soldier = findPlayerUnitInHex(gameboard[hexClicked.q][hexClicked.r],STATE_ORDERS_ACTIVE_PLAYER,"Soldier");
+				var myUnit;
+				if(soldier || robot){ myUnit = (soldier) ? soldier : robot; }
+				if(myUnit) {ACTIVE_ORDER.unit = myUnit; }
+				displayActiveOrder();
+				STATE_ORDER_WRITING_PHASE = "";
+			break;
+			//case ORDER_WRITING_PHASE.SET_ORDER_TYPE:
+			//		break;
+			case ORDER_WRITING_PHASE.SET_ORDER_LOCATION:
+				ACTIVE_ORDER.orderX = hexClicked.q;
+				ACTIVE_ORDER.orderY = hexClicked.r;
+				displayActiveOrder();
+				STATE_ORDER_WRITING_PHASE = "";
+			break;
+		}
+		
+		//re-draw board after order
 		initGameboard();
 	});
+	
+	
+	$('#btn_save_order').click(function(){saveOrder();});
 	
 });
 
@@ -58,30 +89,80 @@ function unit(player,x,y,order){
 
 }
 
-function Soldier(x,y){
+function Soldier(x,y,player){
+
+	this.player;
+	this.X = x;
+	this.Y = y;
 	//moveTo(x,y);
 	//fireAt(x,y);
 	//excavate();
 }
 
-function Robot(x,y){
+function Robot(x,y,player){
+
+	this.player;
+	this.X = x;
+	this.Y = y;
 	//moveTo(x,y);
 }
 
-function Flag(x,y){
+function Flag(x,y,player){
 
+	this.player;
+	this.X = x;
+	this.Y = y;
 }
 
-function Mine(x,y){
-   
+function Mine(x,y,player){
+   	this.player;
+	this.X = x;
+	this.Y = y;
+}
+
+var OrderType =  {
+	
+	MOVE : "MOVE",
+	FIRE : "FIRE",
+	HOLD : "HOLD",
+	SUPPORT : "SUPPORT",
+	RETREAT_MOVE : "RETREAT_MOVE",
+	
+	//stackable - secondary orders
+	PICKUP_MINE : "PICKUP_MINE",
+	PLACE_MINE : "PLACE_MINE"
+	
+	/** automatic actions **/
+	/*
+		
+	*/
+}
+
+function OrderResult(){
+	
+	this.DISPLACE = "DISPLACE";
+	this.BOUNCE = "BOUNCE";
+	this.MOVE_SUCCESS = "MOVE_SUCCESS";
+	this.HIT = "HIT";
+	this.MISS = "MISS";
+	this.MINE_HIT = "MINE_HIT";
+	this.MINE_DEFUSE = "MINE_DEFUSE";
+	this.TAKE_FLAG = "TAKE_FLAG";
+	this.DROP_FLAG = "DROP_FLAG";
+	this.SELF_DESTROYED = "SELF_DESTROYED";
+	this.TARGET_DESTROYED = "TARGET_DESTROYED";
+	this.ENEMY_DESTROYED = "TARGET_DESTROYED";
+	this.FRIENDLY_DESTROYED = "TARGET_DESTROYED";
+	this.FLAG_VICTORY = "FLAG_VICTORY";
 }
 
 
-function order(){
+function Order(){
 
-   var orderType;
-   var orderX;
-   var orderY;
+   this.unit = null;
+   this.orderType  = null;
+   this.orderX = null;
+   this.orderY = null;
 }
 
 
@@ -223,3 +304,15 @@ function player(){
   var units = [];
   
 }
+
+function findPlayerUnitInHex(hex,player,UnitType){
+
+	for(var curUnit in hex.Occupants){
+		if(hex.Occupants[curUnit].constructor.name == UnitType){
+			return hex.Occupants[curUnit];
+		}
+	}
+	
+	return null;
+}
+
