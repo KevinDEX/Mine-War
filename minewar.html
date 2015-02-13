@@ -1,11 +1,11 @@
 
 <html>
 <head>
-<meta name=“viewport” content="initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 <style>
 
 body, table {
-	font-size:2em;
+	font-size:1em;
 }
 
 input {
@@ -26,7 +26,7 @@ border:2px solid black;
 background-color:lightgrey;
 padding-left:1em;
 padding-right:1em;
-font-size:0.5em;
+font-size:1em;
 }
 
 #row4 td{
@@ -52,20 +52,22 @@ background-color:white;
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="minewar.js"></script>
 <script src="minewar_graphics.js"></script>
+<script src="minewar_order_helpers.js"></script>
 <script src="minewar_order_writing.js"></script>
 <script src="minewar_order_execution.js"></script>
 
 
 </head>
+<body style="margin:0px">
 <h1> MINE WAR!</h1>
 
 <div>
 	<div style="float:left">
-	<canvas id="minewar-canvas" width="900" height="560" style="border:1px solid black">
+	<canvas id="minewar-canvas" width="450" height="280" style="border:1px solid black">
 
 	</canvas>
 	</div>
-<!--
+
 	<div>You are at Hex: <span id="mouse-over-hex-label" style="margin:5px;">0,0</span> </div>
 
 	<div>You are at Mouse-X: <span id="mouse-x-label" style="margin:5px;"></span> </div>
@@ -74,10 +76,9 @@ background-color:white;
 	<div>Center-X <span id="center-x-coord-label" style="margin:5px;"></span> </div>
 	<div>Center-Y <span id="center-y-coord-label" style="margin:5px;"></span> </div>
 
-	<div style="clear:both"> 
-	-->
+	
 </div>
-
+<div style="clear:both"> 
 
 <div style="margin-top:40px;border:1px black solid">
 	Select Player:<br/>
@@ -170,4 +171,5 @@ background-color:white;
 </table>
 </div>
 
+</body>
 </html>

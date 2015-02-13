@@ -72,6 +72,8 @@ $( document ).ready(function() {
 				var myUnit;
 				if(soldier || robot){ myUnit = (soldier) ? soldier : robot; }
 				if(myUnit) {ACTIVE_ORDER.unit = myUnit; }
+				ACTIVE_ORDER.startX = myUnit.X;
+				ACTIVE_ORDER.startY = myUnit.Y;
 				displayActiveOrder();
 				STATE_ORDER_WRITING_PHASE = "";
 			break;
@@ -174,6 +176,9 @@ function Order(){
    this.orderType  = null;
    this.orderX = null;
    this.orderY = null;
+   
+   this.startX = null;
+   this.startY = null;
 }
 
 
@@ -184,8 +189,9 @@ this.Y = y;
 this.Visibility =  visible;
 this.Occupants = [];
 this.Hex;
+this.Orders = [];
 
-return {X:this.X, Y:this.Y,Visibility:this.Visibility,Occupants:this.Occupants,Hex:this.Hex};
+return {X:this.X, Y:this.Y,Visibility:this.Visibility,Occupants:this.Occupants,Hex:this.Hex,Orders:this.Orders};
 
 //this.drawHex = mwg_drawHex;
 

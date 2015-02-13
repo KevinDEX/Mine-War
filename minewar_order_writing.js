@@ -92,7 +92,7 @@ function saveOrder(){
 		}
 	}
 
-	if(ACTIVE_ORDER.player = player1.playerId){
+	if(ACTIVE_ORDER.unit.player == player1.playerId){
 	
 		player1.orders.push(ACTIVE_ORDER);
 		$('#saved_orders').append('<tr id=p1order'+(player1.orders.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
@@ -102,13 +102,13 @@ function saveOrder(){
 			+'<td><input type="button" value="Delete" onclick="player1.orders.pop('+(player1.orders.length-1)+');$(\'#p1order'+(player1.orders.length-1)+'\').remove();" /></tr>');
 	}
 	
-	else if(ACTIVE_ORDER.player = player2.playerId){
+	else if(ACTIVE_ORDER.unit.player == player2.playerId){
 		player2.orders.push(ACTIVE_ORDER);
 		$('#saved_orders').append('<tr id=p2order'+(player2.orders.length-1)+'><td>'+ACTIVE_ORDER.unit.player+'</td>'
 			+'<td>'+ACTIVE_ORDER.unit.constructor.name + " " + ACTIVE_ORDER.unit.X + "," + ACTIVE_ORDER.unit.Y+'</td>'
 			+'<td>'+ACTIVE_ORDER.orderType+'</td>'
 			+'<td>'+ACTIVE_ORDER.orderX + ","+ ACTIVE_ORDER.orderY+'</td>'
-			+'<td><input type="button" value="Delete" onclick="player1.orders.pop('+(player2.orders.length-1)+');$(\'#p2order'+(player2.orders.length-1)+'\').remove();" /></tr>');
+			+'<td><input type="button" value="Delete" onclick="player2.orders.pop('+(player2.orders.length-1)+');$(\'#p2order'+(player2.orders.length-1)+'\').remove();" /></tr>');
 	}
 	
 	

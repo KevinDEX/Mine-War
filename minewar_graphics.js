@@ -2,7 +2,7 @@
 var minewar_canvas;
 var drawingContext;
 
-var hex_size = 40;
+var hex_size = 20;
 var hex_height = hex_size * 2;
 var hex_width = Math.sqrt(3)/2 * hex_height;
 
