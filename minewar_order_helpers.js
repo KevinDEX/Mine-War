@@ -4,8 +4,6 @@ var occupiedHexs = [];
 var orderResults = [];
 
 function initOrdersByHexQueue(hex){
-	
-	//for(var hex in occupiedHexs){
 		
 		var currentHexOrdersExec = [];
 	
@@ -22,9 +20,7 @@ function initOrdersByHexQueue(hex){
 			
 			orderResults.push(curOrderExec);
 			currentHexOrdersExec.push(curOrderExec);
-		}
-	//}
-	
+		}	
 	
 	return currentHexOrdersExec;
 }
@@ -38,14 +34,9 @@ function runOrdersForHex(hex){
 		if(currentHexOrders.length > 1){
 		
 			for(var battleOrders = 0; battleOrders < currentHexOrders.length - 1;battleOrders++){
-				//if(battleOrders < currentHexOrders.length-1){
 					if(currentHexOrders[battleOrders].calculatedStrength > currentHexOrders[battleOrders+1].calculatedStrength){
-						//winner = currentHexOrders[battleOrders].order.unit;
 						
 						// can't write order yet.  Give new hold order for won hex
-						//currentHexOrders[battleOrders].order.unit.X = currentHexOrders[battleOrders].order.orderX;
-						//currentHexOrders[battleOrders].order.unit.Y = currentHexOrders[battleOrders].order.orderY;
-						//writePostHexResolveHoldOrder(currentHexOrders[battleOrders].order.unit,currentHexOrders[battleOrders].order.orderX,currentHexOrders[battleOrders].order.orderY);
 						if( occupiedHexs.indexOf(tempBoard[currentHexOrders[battleOrders].order.orderX][currentHexOrders[battleOrders].order.orderY]) < 0 || 
 							occupiedHexs.indexOf(tempBoard[currentHexOrders[battleOrders].order.orderX][currentHexOrders[battleOrders].order.orderY]) == hex){
 							
@@ -65,27 +56,14 @@ function runOrdersForHex(hex){
 							var unitToBounce = currentHexOrders[battleOrders+1].order.unit;
 							var hexToBounceTo = tempBoard[currentHexOrders[battleOrders+1].order.unit.X][currentHexOrders[battleOrders+1].order.unit.Y];
 							hexToBounceTo.Occupants.push(currentHexOrders[battleOrders+1].order.unit);
-							//remove the failed order  
-							//currentHexOrders.splice(battleOrders+1,1);
-							//removeFailedOrderFromHex(unitToBounce.order,occupiedHexs[hex]);
 							//create a new hold order at the old location and add to that hex's orders queue.  add the modified hex to "occupiedHexes" - if not there.
-							/*var newHoldOrder = new Order();
-							newHoldOrder.unit = unitToBounce;
-							newHoldOrder.orderX = unitToBounce.X;
-							newHoldOrder.orderY = unitToBounce.Y;
-							newHoldOrder.orderType = OrderType.HOLD;
-							hexToBounceTo.Orders.push(newHoldOrder);
-							if( occupiedHexs.indexOf(hexToBounceTo) < 0 ){
-								occupiedHexs.push(hexToBounceTo);
-							}*/
 							writePostHexResolveHoldOrder(unitToBounce,unitToBounce.X,unitToBounce.Y);
 							console.log(JSON.stringify(currentHexOrders[battleOrders+1]) + "fails");
 						}
 						
-						//diplacedUnits.push(currentHexOrders[battleOrders + 1].order.unit);
-						//tempBoard[currentHexOrders[battleOrders+1].order.unit.X][currentHexOrders[battleOrders+1].order.unit.Y].Occupants.push(currentHexOrders[battleOrders+1].order.unit);
 						var unitIndex = occupiedHexs[hex].Occupants.indexOf(currentHexOrders[battleOrders + 1].order.unit);
 						occupiedHexs[hex].Occupants.splice(unitIndex,1);
+						//remove failed orders	
 						removeFailedOrderFromHex(displacedUnit.order,occupiedHexs[hex]);
 						
 						diplacedUnitsCount++;
@@ -100,38 +78,15 @@ function runOrdersForHex(hex){
 						var unit2Index = occupiedHexs[hex].Occupants.indexOf(currentHexOrders[battleOrders].order.unit);
 						occupiedHexs[hex].Occupants.splice(unit1Index,1);
 						
-						//remove failed orders
-						//var hexToBounceTo = tempBoard[currentHexOrders[battleOrders].order.unit.X][currentHexOrders[battleOrders].order.unit.Y];
-						//var hexToBounceTo2 = tempBoard[currentHexOrders[battleOrders+1].order.unit.X][currentHexOrders[battleOrders+1].order.unit.Y];
 						var unitToBounce = currentHexOrders[battleOrders].order.unit;
 						var unitToBounce2 = currentHexOrders[battleOrders+1].order.unit;
-						//currentHexOrders.splice(battleOrders+1,1);
-						//currentHexOrders.splice(battleOrders,1);
+						//remove failed orders	
 						removeFailedOrderFromHex(unitToBounce.order,occupiedHexs[hex]);
 						removeFailedOrderFromHex(unitToBounce2.order,occupiedHexs[hex]);
+						//create a new hold order at the old location and add to that hex's orders queue.  add the modified hex to "occupiedHexes" - if not there.
 						writePostHexResolveHoldOrder(unitToBounce,unitToBounce.X,unitToBounce.Y);
 						writePostHexResolveHoldOrder(unitToBounce2,unitToBounce2.X,unitToBounce2.Y);
-						// create new hold orders
-						/*var newHoldOrder = new Order();
-							newHoldOrder.unit = unitToBounce;
-							newHoldOrder.orderX = unitToBounce.X;
-							newHoldOrder.orderY = unitToBounce.Y;
-							newHoldOrder.orderType = OrderType.HOLD;
-							hexToBounceTo.Orders.push(newHoldOrder);
-							if( occupiedHexs.indexOf(hexToBounceTo) < 0 ){
-								occupiedHexs.push(hexToBounceTo);
-							}
 						
-						
-						var newHoldOrder2 = new Order();
-							newHoldOrder2.unit = unitToBounce2;
-							newHoldOrder2.orderX = unitToBounce2.X;
-							newHoldOrder2.orderY = unitToBounce2.Y;
-							newHoldOrder2.orderType = OrderType.HOLD;
-							hexToBounceTo2.Orders.push(newHoldOrder2);
-							if( occupiedHexs.indexOf(hexToBounceTo2) < 0 ){
-								occupiedHexs.push(hexToBounceTo2);
-							}*/
 						
 						bouncedUnitsCount = bouncedUnitsCount + 2;
 						
@@ -140,9 +95,6 @@ function runOrdersForHex(hex){
 					}
 					else{
 						//can't move fully yet, write hold order
-						//currentHexOrders[battleOrders + 1].order.unit.X = currentHexOrders[battleOrders].order.orderX;
-						//currentHexOrders[battleOrders + 1].order.unit.Y = currentHexOrders[battleOrders].order.orderY;
-						//writePostHexResolveHoldOrder(currentHexOrders[battleOrders].order.unit,currentHexOrders[battleOrders].order.orderX,currentHexOrders[battleOrders].order.orderY);
 						if( occupiedHexs.indexOf(tempBoard[currentHexOrders[battleOrders+1].order.orderX][currentHexOrders[battleOrders+1].order.orderY]) < 0 ||
 							occupiedHexs.indexOf(tempBoard[currentHexOrders[battleOrders+1].order.orderX][currentHexOrders[battleOrders+1].order.orderY]) == hex){
 							
@@ -158,14 +110,10 @@ function runOrdersForHex(hex){
 							diplacedUnits.push(currentHexOrders[battleOrders].order.unit);
 						}
 						else{
-							//tempBoard[currentHexOrders[battleOrders].order.unit.X][currentHexOrders[battleOrders].order.unit.Y].Occupants.push(currentHexOrders[battleOrders].order.unit);
 							//bounce unit to old hex
 							var unitToBounce = currentHexOrders[battleOrders].order.unit;
 							var hexToBounceTo = tempBoard[currentHexOrders[battleOrders].order.unit.X][currentHexOrders[battleOrders].order.unit.Y];
 							hexToBounceTo.Occupants.push(currentHexOrders[battleOrders].order.unit);
-							//remove the failed order
-							//currentHexOrders.splice(battleOrders,1);
-							//removeFailedOrderFromHex(unitToBounce.order,occupiedHexs[hex]);
 							//create a new hold order at the old location and add to that hex's orders queue.  add the modified hex to "occupiedHexes" - if not there.
 							writePostHexResolveHoldOrder(unitToBounce,unitToBounce.X,unitToBounce.Y);
 							console.log(JSON.stringify(currentHexOrders[battleOrders]) + "fails");
@@ -173,6 +121,7 @@ function runOrdersForHex(hex){
 						
 						var unitIndex = occupiedHexs[hex].Occupants.indexOf(currentHexOrders[battleOrders].order.unit);
 						occupiedHexs[hex].Occupants.splice(unitIndex,1);
+						//remove the failed order
 						removeFailedOrderFromHex(displacedUnit.order,occupiedHexs[hex]);
 						
 						diplacedUnitsCount++;
@@ -183,14 +132,13 @@ function runOrdersForHex(hex){
 			}	
 		}
 		else {
-			//we only write new locations when there are only hold orders are left in queue
+			//we only write new locations when there are only hold orders are left in queue for this hex
 			if(canWriteFinalPositions){
 				currentHexOrders[0].order.unit.x = currentHexOrders[0].order.orderX;
 				currentHexOrders[0].order.unit.Y = currentHexOrders[0].order.orderY;
 				console.log(JSON.stringify(currentHexOrders[0]) + "SUCCEEDS AND WRITTEN");
 			}
 			else{
-				//writePostHexResolveHoldOrder(currentHexOrders[0].order.unit,currentHexOrders[0].order.orderX,currentHexOrders[0].order.orderY);
 				occupiedHexs.push(tempBoard[currentHexOrders[0].order.orderX][currentHexOrders[0].order.orderY]);
 				console.log(JSON.stringify(currentHexOrders[0]) + "PENDING");
 			}
